@@ -2,7 +2,7 @@ import logging
 from reader import *
 from Service import *
 from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, CallbackQueryHandler,Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, CallbackQueryHandler,filters
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
 import json
@@ -116,13 +116,13 @@ def send(update, context):
 
 def main() -> None:
     token = os.getenv('Telegram_Token')
-    updater = Updater(token=token, use_context=True)
+    updater = Updater(token)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("register", register))
     dispatcher.add_handler(CommandHandler("send", send))
     dispatcher.add_handler(CallbackQueryHandler(button_tap))
-    dispatcher.add_handler(MessageHandler(~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(~filters.command, echo))
 
     # Scheduler setup
     scheduler = BackgroundScheduler()
