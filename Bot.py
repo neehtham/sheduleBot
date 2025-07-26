@@ -116,7 +116,7 @@ def send(update, context):
 
 def main() -> None:
     token = os.getenv('Telegram_Token')
-    updater = Updater(token)
+    updater = Updater(token, update_queue=None)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("register", register))
