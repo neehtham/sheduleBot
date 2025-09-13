@@ -25,15 +25,6 @@ NEXT_BUTTON = "Next"
 BACK_BUTTON = "Back"
 TUTORIAL_BUTTON = "Tutorial"
 
-# Build keyboards
-FIRST_MENU_MARKUP = InlineKeyboardMarkup([[
-    InlineKeyboardButton(NEXT_BUTTON, callback_data=NEXT_BUTTON)
-]])
-SECOND_MENU_MARKUP = InlineKeyboardMarkup([
-    [InlineKeyboardButton(BACK_BUTTON, callback_data=BACK_BUTTON)],
-    [InlineKeyboardButton(TUTORIAL_BUTTON, url="https://core.telegram.org/bots/api")]
-])
-
 
 def echo(update: Update, context: CallbackContext) -> None:
     print(f'{update.message.from_user.first_name} wrote {update.message.text}')
@@ -75,6 +66,7 @@ def write (result):
 
     with open("users.json", "w") as outfile:
         json.dump(users, outfile, indent=2)
+
 def button_tap(update: Update, context: CallbackContext) -> None:
     global accomodation, code, group
     accomodation = update.callback_query.data

@@ -15,7 +15,6 @@ def finder(intakeCode, groupCode, acc):
 
     for lecture in lectures:
         today = str(datetime.today())
-        # today = "08-05-2025"
         today = parser.parse(today)
         classDate = parser.parse(lecture['date'],dayfirst=True)
         if intakeCode == lecture['intake'] and groupCode == lecture['group'] and (today.date()) == (classDate.date()):
@@ -60,7 +59,8 @@ def finder(intakeCode, groupCode, acc):
 
     output = f''
     if dayLectures:
-        output += f"You have {len(dayLectures)} physical classes today.\nYour going bus is in {goingBus[0]['time']}.\nYour returning bus is in {returingBus[0]['time']}.\n\n"
+        if goingBus and returingBus:  # Check if both lists have elements
+            output += f"You have {len(dayLectures)} physical classes today.\nYour going bus is in {goingBus[0]['time']}.\nYour returning bus is in {returingBus[0]['time']}.\n\n"
         for l in dayLectures:
             output += f"{l['name']} from {l['start']} to {l['end']} in {l['room']}\n"
     else:
@@ -72,4 +72,4 @@ def finder(intakeCode, groupCode, acc):
     else:
         output += "You don't have a online class today\n"
     return output
-print(finder('APD1F2503SE','G1','City of Green'))
+# print(finder('APD1F2503SE','G1','City of Green'))

@@ -1,8 +1,12 @@
-[
-  {
+{
+  "1589793209": {
     "code": "APD1F2503SE",
     "group": "G1",
-    "accomodation": "City of Green",
-    "id": 1589793209
+    "accommodation": "COG"
+  },
+  "360850924": {
+    "code": "APD3F2505SE",
+    "group": "G1",
+    "accommodation": "LRT - Bukit Jalil"
   }
-]
+}
