@@ -170,7 +170,7 @@ def main() -> None:
     shedule_update.run_daily(
         getting,
         time=time(hour=7, minute=0, tzinfo=malaysia_tz),
-        days=(6),
+        days=(6,7),
         name='shedule_update'
     )
 
