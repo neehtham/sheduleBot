@@ -9,7 +9,6 @@ from telegram.ext import (
     CallbackQueryHandler
 )
 import os
-from dotenv import load_dotenv
 import json
 from datetime import time
 from enum import Enum
@@ -18,12 +17,11 @@ from Service import getting
 from datetime import time
 import pytz
 
-# Load environment variables
-load_dotenv()
+
 registering = False
 code = ""
 
-token = os.getenv('Telegram_Token')
+token = os.environ.get('Telegram_Token')
 if not token:
     raise ValueError("No Telegram token found in environment variables")
 
@@ -152,7 +150,6 @@ async def delete_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 def main() -> None:
     print("Bot started...")
     app = ApplicationBuilder().token(token).build()
-    app.add_handler(CommandHandler("hello", hello))
     app.add_handler(CommandHandler("register", register))
     app.add_handler(CommandHandler("send", senddaily))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
