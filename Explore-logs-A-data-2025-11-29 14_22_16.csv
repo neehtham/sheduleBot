@@ -1,0 +1,80 @@
+"timestamp","$qw_message","event.provider","fly.app.instance","fly.app.name","fly.region","fly.zone","log.level","message","sort"
+1764397272294,2025/11/29 06:21:12 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025/11/29 06:21:12 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,1764397272000000000
+1764397271957,Machine started in 1.334s,runner,4d89615f2e2638,shedulebot,sin,e2dd,info,Machine started in 1.334s,1764397271000000000
+1764397271867,[32m INFO[0m [fly api proxy] listening at /.fly/api,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m [fly api proxy] listening at /.fly/api,1764397271000000000
+1764397271842,[32m INFO[0m Preparing to run: `python Bot.py` as root,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Preparing to run: `python Bot.py` as root,1764397271000000000
+1764397271725,[32m INFO[0m Starting init (commit: fedadb2e)...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting init (commit: fedadb2e)...,1764397271000000000
+1764397270809,"2025-11-29T06:21:10.809636053 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"2025-11-29T06:21:10.809636053 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",1764397270000000000
+1764397270809,2025-11-29T06:21:10.809476039 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025-11-29T06:21:10.809476039 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,1764397270000000000
+1764397269427,[    3.998737] reboot: Restarting system,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[    3.998737] reboot: Restarting system,1764397269000000000
+1764397269386,[32m INFO[0m Starting clean up.,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting clean up.,1764397269000000000
+1764397269368,[32m INFO[0m Main child exited normally with code: 1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Main child exited normally with code: 1,1764397269000000000
+1764397268810,IndexError: tuple index out of range,app,4d89615f2e2638,shedulebot,sin,e2dd,info,IndexError: tuple index out of range,1764397268000000000
+1764397268805,~~~~~~~~~~~~~~~~~~^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                          ~~~~~~~~~~~~~~~~~~^^^,1764397268000000000
+1764397268805,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397268000000000
+1764397268805,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",1764397268000000000
+1764397268804,^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,1764397268000000000
+1764397268801,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397268000000000
+1764397268800,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",1764397268000000000
+1764397268800,shedule_update.run_daily(,app,4d89615f2e2638,shedulebot,sin,e2dd,info,    shedule_update.run_daily(,1764397268000000000
+1764397268800,"File ""/app/Bot.py"", line 170, in main",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 170, in main",1764397268000000000
+1764397268800,main(),app,4d89615f2e2638,shedulebot,sin,e2dd,info,    main(),1764397268000000000
+1764397268799,"File ""/app/Bot.py"", line 179, in <module>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 179, in <module>",1764397268000000000
+1764397268799,Traceback (most recent call last):,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Traceback (most recent call last):,1764397268000000000
+1764397268677,Bot started...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Bot started...,1764397268000000000
+1764397268650,JSON data saved successfully!,app,4d89615f2e2638,shedulebot,sin,e2dd,info,JSON data saved successfully!,1764397268000000000
+1764397266747,2025/11/29 06:21:06 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025/11/29 06:21:06 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,1764397266000000000
+1764397266607,Machine started in 1.278s,runner,4d89615f2e2638,shedulebot,sin,e2dd,info,Machine started in 1.278s,1764397266000000000
+1764397266352,[32m INFO[0m [fly api proxy] listening at /.fly/api,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m [fly api proxy] listening at /.fly/api,1764397266000000000
+1764397266349,[32m INFO[0m Preparing to run: `python Bot.py` as root,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Preparing to run: `python Bot.py` as root,1764397266000000000
+1764397266253,[32m INFO[0m Starting init (commit: fedadb2e)...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting init (commit: fedadb2e)...,1764397266000000000
+1764397265359,"2025-11-29T06:21:05.359593766 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"2025-11-29T06:21:05.359593766 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",1764397265000000000
+1764397265359,2025-11-29T06:21:05.359409412 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025-11-29T06:21:05.359409412 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,1764397265000000000
+1764397264291,[    4.034556] reboot: Restarting system,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[    4.034556] reboot: Restarting system,1764397264000000000
+1764397264232,[32m INFO[0m Starting clean up.,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting clean up.,1764397264000000000
+1764397264215,[32m INFO[0m Main child exited normally with code: 1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Main child exited normally with code: 1,1764397264000000000
+1764397263569,IndexError: tuple index out of range,app,4d89615f2e2638,shedulebot,sin,e2dd,info,IndexError: tuple index out of range,1764397263000000000
+1764397263569,~~~~~~~~~~~~~~~~~~^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                          ~~~~~~~~~~~~~~~~~~^^^,1764397263000000000
+1764397263569,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397263000000000
+1764397263569,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",1764397263000000000
+1764397263569,^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,1764397263000000000
+1764397263565,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397263000000000
+1764397263564,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",1764397263000000000
+1764397263564,shedule_update.run_daily(,app,4d89615f2e2638,shedulebot,sin,e2dd,info,    shedule_update.run_daily(,1764397263000000000
+1764397263564,"File ""/app/Bot.py"", line 170, in main",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 170, in main",1764397263000000000
+1764397263564,main(),app,4d89615f2e2638,shedulebot,sin,e2dd,info,    main(),1764397263000000000
+1764397263564,"File ""/app/Bot.py"", line 179, in <module>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 179, in <module>",1764397263000000000
+1764397263564,Traceback (most recent call last):,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Traceback (most recent call last):,1764397263000000000
+1764397263432,Bot started...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Bot started...,1764397263000000000
+1764397263403,JSON data saved successfully!,app,4d89615f2e2638,shedulebot,sin,e2dd,info,JSON data saved successfully!,1764397263000000000
+1764397261615,2025/11/29 06:21:01 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025/11/29 06:21:01 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,1764397261000000000
+1764397261340,Machine started in 1.265s,runner,4d89615f2e2638,shedulebot,sin,e2dd,info,Machine started in 1.265s,1764397261000000000
+1764397261213,[32m INFO[0m [fly api proxy] listening at /.fly/api,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m [fly api proxy] listening at /.fly/api,1764397261000000000
+1764397261190,[32m INFO[0m Preparing to run: `python Bot.py` as root,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Preparing to run: `python Bot.py` as root,1764397261000000000
+1764397261080,[32m INFO[0m Starting init (commit: fedadb2e)...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting init (commit: fedadb2e)...,1764397261000000000
+1764397260187,"2025-11-29T06:21:00.186995968 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"2025-11-29T06:21:00.186995968 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",1764397260000000000
+1764397260186,2025-11-29T06:21:00.186876645 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025-11-29T06:21:00.186876645 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,1764397260000000000
+1764397259184,[    4.005235] reboot: Restarting system,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[    4.005235] reboot: Restarting system,1764397259000000000
+1764397259138,[32m INFO[0m Starting clean up.,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting clean up.,1764397259000000000
+1764397259121,[32m INFO[0m Main child exited normally with code: 1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Main child exited normally with code: 1,1764397259000000000
+1764397258440,IndexError: tuple index out of range,app,4d89615f2e2638,shedulebot,sin,e2dd,info,IndexError: tuple index out of range,1764397258000000000
+1764397258440,~~~~~~~~~~~~~~~~~~^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                          ~~~~~~~~~~~~~~~~~~^^^,1764397258000000000
+1764397258440,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397258000000000
+1764397258440,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in <listcomp>",1764397258000000000
+1764397258440,^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,app,4d89615f2e2638,shedulebot,sin,e2dd,info,                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^,1764397258000000000
+1764397258436,"day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"    day_of_week="","".join([self._CRON_MAPPING[d] for d in days]),",1764397258000000000
+1764397258436,"File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/usr/local/lib/python3.11/site-packages/telegram/ext/_jobqueue.py"", line 610, in run_daily",1764397258000000000
+1764397258436,shedule_update.run_daily(,app,4d89615f2e2638,shedulebot,sin,e2dd,info,    shedule_update.run_daily(,1764397258000000000
+1764397258436,"File ""/app/Bot.py"", line 170, in main",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 170, in main",1764397258000000000
+1764397258436,main(),app,4d89615f2e2638,shedulebot,sin,e2dd,info,    main(),1764397258000000000
+1764397258436,"File ""/app/Bot.py"", line 179, in <module>",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"  File ""/app/Bot.py"", line 179, in <module>",1764397258000000000
+1764397258435,Traceback (most recent call last):,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Traceback (most recent call last):,1764397258000000000
+1764397258312,Bot started...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,Bot started...,1764397258000000000
+1764397258286,JSON data saved successfully!,app,4d89615f2e2638,shedulebot,sin,e2dd,info,JSON data saved successfully!,1764397258000000000
+1764397256448,2025/11/29 06:20:56 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025/11/29 06:20:56 INFO SSH listening listen_address=[fdaa:18:4e6c:a7b:7f07:1565:a3e8:2]:22,1764397256000000000
+1764397256251,Machine started in 1.224s,runner,4d89615f2e2638,shedulebot,sin,e2dd,info,Machine started in 1.224s,1764397256000000000
+1764397256103,[32m INFO[0m [fly api proxy] listening at /.fly/api,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m [fly api proxy] listening at /.fly/api,1764397256000000000
+1764397256102,[32m INFO[0m Preparing to run: `python Bot.py` as root,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Preparing to run: `python Bot.py` as root,1764397256000000000
+1764397256007,[32m INFO[0m Starting init (commit: fedadb2e)...,app,4d89615f2e2638,shedulebot,sin,e2dd,info,[32m INFO[0m Starting init (commit: fedadb2e)...,1764397256000000000
+1764397255027,"2025-11-29T06:20:55.027022667 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",app,4d89615f2e2638,shedulebot,sin,e2dd,info,"2025-11-29T06:20:55.027022667 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Listening on API socket (""/fc.sock"").",1764397255000000000
+1764397255026,2025-11-29T06:20:55.026696289 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,app,4d89615f2e2638,shedulebot,sin,e2dd,info,2025-11-29T06:20:55.026696289 [01K7JV6JP9BMAMR8Q64Z2VR3GM:main] Running Firecracker v1.12.1,1764397255000000000

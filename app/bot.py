@@ -15,31 +15,45 @@ from enum import Enum
 from reader import finder
 from Service import getting
 from datetime import time
+from dotenv import load_dotenv
 import pytz
+from pathlib import Path
 
 
 registering = False
 code = ""
-
+load_dotenv()
 token = os.environ.get('Telegram_Token')
 if not token:
     raise ValueError("No Telegram token found in environment variables")
 
-def write (result):
+# set project root and users file location
+BASE_DIR = Path(__file__).resolve().parents[1]  # /Users/neehtham/Documents/code/sheduleBot
+USERS_FILE = BASE_DIR / "users.json"
+
+def write(result):
     try:
-        with open("users.json", "r") as infile:
-            users = json.load(infile)
+        if USERS_FILE.exists():
+            with USERS_FILE.open("r", encoding="utf-8") as infile:
+                users = json.load(infile)
+        else:
+            users = {}
     except (json.JSONDecodeError, FileNotFoundError):
-        users = []
+        users = {}
+
+    if not isinstance(users, dict):
+        users = {}
 
     users.update(result)
 
-    with open("users.json", "w") as outfile:
+    with USERS_FILE.open("w", encoding="utf-8") as outfile:
         json.dump(users, outfile, indent=2)
 
 def read():
     try:
-        with open("users.json", "r") as infile:
+        if not USERS_FILE.exists():
+            return {}
+        with USERS_FILE.open("r", encoding="utf-8") as infile:
             users = json.load(infile)
             return users
     except (json.JSONDecodeError, FileNotFoundError):
@@ -122,19 +136,41 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_data.pop(user_id, None)
     del user_states[user_id]
 
-async def senddaily(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def senddaily_job(context: ContextTypes.DEFAULT_TYPE) -> dict:
     users = read()
+    if not users:
+        print("senddaily_job: no users found")
+        return {"sent": [], "failed": [], "skipped": []}
+
+    sent = []
+    failed = []
+    skipped = []
+
     for user_id, details in users.items():
-        code = details['code']
-        group = details['group']
-        accommodation = details['accommodation']
+        code = details.get('code')
+        group = details.get('group')
+        accommodation = details.get('accommodation')
+
         schedule = finder(code, group, accommodation)
-        print(f"Sending schedule to user {user_id}:\n{schedule}") 
+        print(f"DEBUG: user={user_id!r} code={code!r} group={group!r} accommodation={accommodation!r} schedule={schedule!r}")
+
+        if not schedule:
+            print(f"Skipping {user_id}: no schedule returned")
+            skipped.append(user_id)
+            continue
+
         try:
             await context.bot.send_message(chat_id=user_id, text=schedule)
+            sent.append(user_id)
         except Exception as e:
             print(f"Failed to send message to {user_id}: {e}")
-        continue
+            failed.append((user_id, str(e)))
+
+    return {"sent": sent, "failed": failed, "skipped": skipped}
+
+async def senddaily_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("Sending schedules now...")
+    await senddaily_job(context)
 
 async def delete_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
@@ -151,7 +187,7 @@ def main() -> None:
     print("Bot started...")
     app = ApplicationBuilder().token(token).build()
     app.add_handler(CommandHandler("register", register))
-    app.add_handler(CommandHandler("send", senddaily))
+    app.add_handler(CommandHandler("send", senddaily_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.add_handler(CallbackQueryHandler(button))
     app.add_handler(CommandHandler("delete", delete_user))
@@ -161,16 +197,17 @@ def main() -> None:
 
     malaysia_tz = pytz.timezone('Asia/Kuala_Lumpur')
     daily_queue.run_daily(
-        senddaily,
+        senddaily_job,
         time=time(hour=7, minute=0, tzinfo=malaysia_tz),
-        days=(0,1,2,3,4),  
+        days=(0,1,2,3,4),  # Monday=0, Tuesday=1, Wednesday=2, Thursday=3, Friday=4
         name='daily_schedule'
     )
 
+    
     shedule_update.run_daily(
         getting,
         time=time(hour=7, minute=0, tzinfo=malaysia_tz),
-        days=(6,7),
+        days=(5,6),  # Saturday=5, Sunday=6
         name='shedule_update'
     )
 
