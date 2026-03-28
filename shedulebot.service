@@ -1,0 +1,19 @@
+[Unit]
+Description=Telegram Schedule Bot
+After=network.target
+
+[Service]
+# Set the user who will run the bot (e.g., 'ubuntu' or 'root')
+User=your_username
+WorkingDirectory=/path/to/sheduleBot
+# Path to the python executable in your virtual environment
+ExecStart=/path/to/sheduleBot/.venv/bin/python app/bot.py
+Restart=always
+# Wait 5 seconds before restarting after a crash
+RestartSec=5
+
+# Load Environment Variables (Alternative to .env file)
+# Environment=Telegram_Token=your_token_here
+
+[Install]
+WantedBy=multi-user.target

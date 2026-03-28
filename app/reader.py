@@ -26,8 +26,8 @@ def finder(intakeCode, groupCode, acc):
         return f"Error reading schedules: {e}"
     
     day_lectures = []
-    # today = datetime.now().date()
-    today = parser.parse("2026-03-26", dayfirst=True).date()
+    today = datetime.now().date()
+    # today = parser.parse("2026-03-26", dayfirst=True).date()
 
     for lecture in lectures:
         try:
@@ -108,5 +108,5 @@ def finder(intakeCode, groupCode, acc):
 
 if __name__ == "__main__":
     # Test call
-    print(finder('APD2F2602SE','G1','City Of Green'))
+    # print(finder('APD2F2602SE','G1','City Of Green'))
     pass

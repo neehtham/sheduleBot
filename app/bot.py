@@ -78,11 +78,17 @@ async def get_group_code(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.user_data['group'] = update.message.text.strip().upper()
     
     keyboard = [
-        [InlineKeyboardButton("City Of Green", callback_data='City Of Green')],
-        [InlineKeyboardButton("M Vertica", callback_data='M Vertica')],
-        [InlineKeyboardButton("Fortune Park", callback_data='Fortune Park')],
         [InlineKeyboardButton("Bloomsvale", callback_data='Bloomsvale')],
-        [InlineKeyboardButton("LRT - Bukit Jalil", callback_data='LRT - Bukit Jalil')]
+        [InlineKeyboardButton("City Of Green", callback_data='City Of Green')],
+        [InlineKeyboardButton("D'IVO", callback_data='D\'IVO')],
+        [InlineKeyboardButton("Fortune Park", callback_data='Fortune Park')],
+        [InlineKeyboardButton("Harmony", callback_data='Harmony')],
+        [InlineKeyboardButton("Kingston Hotel", callback_data='Kingston Hotel')],
+        [InlineKeyboardButton("Kuchai Sentral", callback_data='Kuchai Sentral')],
+        [InlineKeyboardButton("LRT - Bukit Jalil", callback_data='LRT - Bukit Jalil')],
+        [InlineKeyboardButton("M Vertica", callback_data='M Vertica')],
+        [InlineKeyboardButton("Maple", callback_data='Maple')],
+        [InlineKeyboardButton("Parkhill", callback_data='Parkhill')],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Please choose your accommodation:", reply_markup=reply_markup)
