@@ -3,3 +3,4 @@ APScheduler
 pytz
 python-dateutil
 requests
+python-dotenv

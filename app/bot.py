@@ -1,216 +1,218 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     ApplicationBuilder, 
-    CallbackContext, 
     CommandHandler, 
     ContextTypes,
     MessageHandler,
     filters,
-    CallbackQueryHandler
+    CallbackQueryHandler,
+    ConversationHandler
 )
 import os
 import json
+import asyncio
 from datetime import time
-from enum import Enum
-from reader import finder
-from Service import getting
-from datetime import time
-from dotenv import load_dotenv
 import pytz
 from pathlib import Path
+from dotenv import load_dotenv
 
+from reader import finder
+from Service import getting
 
-registering = False
-code = ""
+# Load environment variables
 load_dotenv()
-token = os.environ.get('Telegram_Token')
-if not token:
+TOKEN = os.environ.get('Telegram_Token')
+if not TOKEN:
     raise ValueError("No Telegram token found in environment variables")
 
-# set project root and users file location
-BASE_DIR = Path(__file__).resolve().parents[1]  # /Users/neehtham/Documents/code/sheduleBot
-USERS_FILE = BASE_DIR / "users.json"
+# Set project root and data directory
+BASE_DIR = Path(__file__).resolve().parents[1]
+DATA_DIR = BASE_DIR / "data"
+USERS_FILE = DATA_DIR / "users.json"
 
-def write(result):
-    try:
-        if USERS_FILE.exists():
-            with USERS_FILE.open("r", encoding="utf-8") as infile:
-                users = json.load(infile)
-        else:
-            users = {}
-    except (json.JSONDecodeError, FileNotFoundError):
-        users = {}
+# Conversation states
+AWAITING_CODE, AWAITING_GROUP, SELECTING_ACCOMMODATION = range(3)
 
-    if not isinstance(users, dict):
-        users = {}
-
-    users.update(result)
-
-    with USERS_FILE.open("w", encoding="utf-8") as outfile:
-        json.dump(users, outfile, indent=2)
-
-def read():
+def read_sync():
     try:
         if not USERS_FILE.exists():
             return {}
         with USERS_FILE.open("r", encoding="utf-8") as infile:
-            users = json.load(infile)
-            return users
+            return json.load(infile)
     except (json.JSONDecodeError, FileNotFoundError):
         return {}
 
-async def welcome(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text("Welcome to the bot! Use /register to register.")
+def write_sync(users):
+    with USERS_FILE.open("w", encoding="utf-8") as outfile:
+        json.dump(users, outfile, indent=2)
 
-class RegistrationState(Enum):
-    IDLE = 0
-    AWAITING_CODE = 1
-    AWAITING_GROUP = 2
-    SELECTING_ACCOMMODATION = 3
+async def read_users():
+    return await asyncio.to_thread(read_sync)
 
-# Replace global variables with user state dictionary
-user_states = {}
-user_data = {}
+async def write_users(users):
+    await asyncio.to_thread(write_sync, users)
 
-async def register(update: Update, context: CallbackContext) -> None:
-    user_id = update.effective_user.id
-    users = read()
-    if user_id in users:
-        await update.message.reply_text("You are already registered.")
-        return
-    else:
-        user_states[user_id] = RegistrationState.AWAITING_CODE
-        await update.message.reply_text("Enter your intake code")
-
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_user.id
-    message = update.message.text
-    
-    if user_id not in user_states:
-        return
-        
-    state = user_states[user_id]
-    
-    if state == RegistrationState.AWAITING_CODE:
-        if user_id not in user_data:
-            user_data[user_id] = {}
-        user_data[user_id]['code'] = message
-        user_states[user_id] = RegistrationState.AWAITING_GROUP
-        await update.message.reply_text("enter your Group code ex:G1")
-        
-    elif state == RegistrationState.AWAITING_GROUP:
-        user_data[user_id]['group'] = message
-        user_states[user_id] = RegistrationState.SELECTING_ACCOMMODATION
-        # Create keyboard directly here
-        keyboard = [
-            [InlineKeyboardButton("City Of Green", callback_data='COG')],
-            [InlineKeyboardButton("M Vertica", callback_data='M Vertica')],
-            [InlineKeyboardButton("Fortune Park", callback_data='Fortune Park')],
-            [InlineKeyboardButton("Bloomsvale", callback_data='Bloomsvale')],
-            [InlineKeyboardButton("LRT - Bukit Jalil", callback_data='LRT - Bukit Jalil')]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text("Please choose your accommodation:", reply_markup=reply_markup)
-    
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
-    query = update.callback_query
-    user_id = update.effective_user.id
-    
-    if user_id not in user_data:
-        user_data[user_id] = {}
-
-    await query.answer()
-
-    await query.edit_message_text(text=f"Selected option: {query.data}")
-
-    user_data[user_id]['accommodation'] = query.data
-
-    result = user_data
-    write(result)
-    await context.bot.send_message(
-        chat_id=query.message.chat_id,
-        text=f"Registration complete!\nCode: {result['user_id']['code']}\nGroup: {result['user_id']['group']}\nAccommodation: {result['user_id']['accommodation']}"
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text(
+        "Welcome to the Schedule Bot! 🚌📚\n\n"
+        "Use /register to start receiving your daily schedule and bus timings.\n"
+        "Use /delete if you wish to unregister."
     )
-    print("User registered:", user_data)
-    user_data.pop(user_id, None)
-    del user_states[user_id]
 
-async def senddaily_job(context: ContextTypes.DEFAULT_TYPE) -> dict:
-    users = read()
-    if not users:
-        print("senddaily_job: no users found")
-        return {"sent": [], "failed": [], "skipped": []}
+async def register_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    user_id = str(update.effective_user.id)
+    users = await read_users()
+    if user_id in users:
+        await update.message.reply_text("You are already registered! Use /delete first if you want to re-register.")
+        return ConversationHandler.END
+    
+    await update.message.reply_text("Please enter your intake code (e.g., APD1F2309SE):")
+    return AWAITING_CODE
 
-    sent = []
-    failed = []
-    skipped = []
+async def get_intake_code(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    context.user_data['code'] = update.message.text.strip().upper()
+    await update.message.reply_text("Now enter your Group code (e.g., G1 or G2):")
+    return AWAITING_GROUP
 
-    for user_id, details in users.items():
-        code = details.get('code')
-        group = details.get('group')
-        accommodation = details.get('accommodation')
+async def get_group_code(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    context.user_data['group'] = update.message.text.strip().upper()
+    
+    keyboard = [
+        [InlineKeyboardButton("City Of Green", callback_data='City Of Green')],
+        [InlineKeyboardButton("M Vertica", callback_data='M Vertica')],
+        [InlineKeyboardButton("Fortune Park", callback_data='Fortune Park')],
+        [InlineKeyboardButton("Bloomsvale", callback_data='Bloomsvale')],
+        [InlineKeyboardButton("LRT - Bukit Jalil", callback_data='LRT - Bukit Jalil')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Please choose your accommodation:", reply_markup=reply_markup)
+    return SELECTING_ACCOMMODATION
 
-        schedule = finder(code, group, accommodation)
-        print(f"DEBUG: user={user_id!r} code={code!r} group={group!r} accommodation={accommodation!r} schedule={schedule!r}")
+async def select_accommodation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    query = update.callback_query
+    user_id = str(update.effective_user.id)
+    accommodation = query.data
+    
+    await query.answer()
+    await query.edit_message_text(text=f"Selected accommodation: {accommodation}")
 
-        if not schedule:
-            print(f"Skipping {user_id}: no schedule returned")
-            skipped.append(user_id)
-            continue
+    # Save user data
+    user_info = {
+        'code': context.user_data['code'],
+        'group': context.user_data['group'],
+        'accommodation': accommodation
+    }
+    
+    users = await read_users()
+    users[user_id] = user_info
+    await write_users(users)
 
-        try:
-            await context.bot.send_message(chat_id=user_id, text=schedule)
-            sent.append(user_id)
-        except Exception as e:
-            print(f"Failed to send message to {user_id}: {e}")
-            failed.append((user_id, str(e)))
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=(
+            "✅ Registration complete!\n\n"
+            f"📍 Intake: {user_info['code']}\n"
+            f"👥 Group: {user_info['group']}\n"
+            f"🏠 Accommodation: {user_info['accommodation']}\n\n"
+            "You will now receive your schedule every morning at 7:00 AM."
+        )
+    )
+    
+    context.user_data.clear()
+    return ConversationHandler.END
 
-    return {"sent": sent, "failed": failed, "skipped": skipped}
-
-async def senddaily_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Sending schedules now...")
-    await senddaily_job(context)
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Registration cancelled.")
+    context.user_data.clear()
+    return ConversationHandler.END
 
 async def delete_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.effective_user.id
-    users = read()
+    user_id = str(update.effective_user.id)
+    users = await read_users()
     if user_id in users:
         del users[user_id]
-        write(users)
+        await write_users(users)
         await update.message.reply_text("Your registration has been deleted.")
     else:
         await update.message.reply_text("You are not registered.")
-     
-#RED ZONE DO NOT DLELETE
-def main() -> None:
-    print("Bot started...")
-    app = ApplicationBuilder().token(token).build()
-    app.add_handler(CommandHandler("register", register))
-    app.add_handler(CommandHandler("send", senddaily_command))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.add_handler(CallbackQueryHandler(button))
-    app.add_handler(CommandHandler("delete", delete_user))
 
-    daily_queue = app.job_queue
-    shedule_update = app.job_queue
-
-    malaysia_tz = pytz.timezone('Asia/Kuala_Lumpur')
-    daily_queue.run_daily(
-        senddaily_job,
-        time=time(hour=7, minute=0, tzinfo=malaysia_tz),
-        days=(0,1,2,3,4),  # Monday=0, Tuesday=1, Wednesday=2, Thursday=3, Friday=4
-        name='daily_schedule'
-    )
-
+async def send_schedules_now(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("🔄 Fetching and sending schedules...")
+    # Refresh data first
+    await getting()
+    results = await run_daily_job(context)
     
-    shedule_update.run_daily(
-        getting,
-        time=time(hour=7, minute=0, tzinfo=malaysia_tz),
-        days=(5,6),  # Saturday=5, Sunday=6
-        name='shedule_update'
+    summary = (
+        f"✅ Sent: {len(results['sent'])}\n"
+        f"❌ Failed: {len(results['failed'])}\n"
+        f"⏭ Skipped: {len(results['skipped'])}"
+    )
+    await update.message.reply_text(f"Schedule distribution complete!\n\n{summary}")
+
+async def run_daily_job(context: ContextTypes.DEFAULT_TYPE) -> dict:
+    users = await read_users()
+    if not users:
+        return {"sent": [], "failed": [], "skipped": []}
+
+    sent, failed, skipped = [], [], []
+
+    for user_id, details in users.items():
+        try:
+            code = details.get('code')
+            group = details.get('group')
+            acc = details.get('accommodation')
+            
+            # finder handles the logic of finding the schedule
+            schedule_text = finder(code, group, acc)
+            
+            if not schedule_text or "No physical classes" in schedule_text:
+                # Still send "No classes" message or skip? 
+                # According to reader.py, it returns a message anyway.
+                pass
+                
+            await context.bot.send_message(chat_id=user_id, text=schedule_text)
+            sent.append(user_id)
+        except Exception as e:
+            print(f"Error sending to {user_id}: {e}")
+            failed.append(user_id)
+
+    return {"sent": sent, "failed": failed, "skipped": skipped}
+
+async def scheduled_morning_task(context: ContextTypes.DEFAULT_TYPE):
+    """Refreshes data and sends schedules every morning."""
+    await getting() # Refresh schedules from S3
+    await run_daily_job(context)
+
+def main() -> None:
+    print("Bot starting...")
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    # Conversation handler for registration
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("register", register_start)],
+        states={
+            AWAITING_CODE: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_intake_code)],
+            AWAITING_GROUP: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_group_code)],
+            SELECTING_ACCOMMODATION: [CallbackQueryHandler(select_accommodation)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
     )
 
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(conv_handler)
+    app.add_handler(CommandHandler("send", send_schedules_now))
+    app.add_handler(CommandHandler("delete", delete_user))
+    
+    # Schedule the daily job at 7:00 AM (MYT)
+    # Note: Ensure the server time is correct or handle timezone
+    job_queue = app.job_queue
+    job_queue.run_daily(
+        scheduled_morning_task, 
+        time=time(hour=7, minute=0, tzinfo=pytz.timezone('Asia/Kuala_Lumpur'))
+    )
+
+    print("Bot is running...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
+
 if __name__ == "__main__":
     main()

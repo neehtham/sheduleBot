@@ -1,75 +1,112 @@
 import json
-from datetime import *
+from datetime import datetime
 from dateutil import parser
-from dateutil.relativedelta import *
+from dateutil.relativedelta import relativedelta
+from pathlib import Path
+
+# Set base directory for data files (project root / data)
+BASE_DIR = Path(__file__).resolve().parents[1]
+DATA_DIR = BASE_DIR / "data"
+
 def finder(intakeCode, groupCode, acc):
-    with open('lectureShedule.json','r')as L:
-        file_contects = L.read()
-    lectures = json.loads(file_contects)
+    lecture_file = DATA_DIR / "lectureShedule.json"
+    bus_file = DATA_DIR / "busShedule.json"
     
-    with open('busShedule.json','r')as B:
-        file_contects = B.read()
-    buses = json.loads(file_contects)
+    try:
+        if not lecture_file.exists():
+            return "Lecture schedule not available yet."
+        with open(lecture_file, 'r', encoding='utf-8') as l_file:
+            lectures = json.load(l_file)
+        
+        if not bus_file.exists():
+            return "Bus schedule not available yet."
+        with open(bus_file, 'r', encoding='utf-8') as b_file:
+            buses = json.load(b_file)
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        return f"Error reading schedules: {e}"
     
-    dayLectures = []
+    day_lectures = []
+    # today = datetime.now().date()
+    today = parser.parse("2026-03-26", dayfirst=True).date()
 
     for lecture in lectures:
-        today = str(datetime.today())
-        today = parser.parse(today)
-        classDate = parser.parse(lecture['date'],dayfirst=True)
-        if intakeCode == lecture['intake'] and groupCode == lecture['group'] and (today.date()) == (classDate.date()):
-            dayLectures.append(lecture)
-            continue
-        else:
+        try:
+            class_date = parser.parse(lecture['date'], dayfirst=True).date()
+            if intakeCode == lecture['intake'] and groupCode == lecture['group'] and today == class_date:
+                day_lectures.append(lecture)
+        except Exception:
             continue
 
     online_l = []
     physical_l = []
-    for l in dayLectures:
-        if 'ONLMCO3' in l['room']:
+    for l in day_lectures:
+        # Check for online rooms (using the existing logic pattern)
+        if 'ONLMCO3' in l['room'].upper() or 'ONLINE' in l['room'].upper():
             online_l.append(l)
         else:
             physical_l.append(l)
-    dayLectures = physical_l
-    location = acc
-    goingBus = []
-    returingBus = []
     
-    if dayLectures:
-        first_l = (parser.parse(dayLectures[0]["start"]) + relativedelta(minutes=-30)).time()
-        last_l =  (parser.parse(dayLectures[-1]["end"]) + relativedelta(minutes=+10)).time()
-        goingBus = [
+    # Prioritize physical classes for bus calculation
+    location = acc
+    going_bus = []
+    returning_bus = []
+    
+    if physical_l:
+        # Sort by start time to get first and last classes correctly
+        physical_l.sort(key=lambda x: parser.parse(x["start"]).time())
+        
+        first_l_start = parser.parse(physical_l[0]["start"])
+        last_l_end = parser.parse(physical_l[-1]["end"])
+        
+        # Buffer: Arrive at least 20 mins before class, leave at least 10 mins after class
+        arrival_deadline = (first_l_start - relativedelta(minutes=20)).time()
+        departure_earliest = (last_l_end + relativedelta(minutes=10)).time()
+        
+        # Latest bus arriving before the deadline
+        going_buses = [
             bus for bus in buses
-            if bus["from"] == location and parser.parse(bus["time"]).time() < first_l
+            if bus["from"].lower() == location.lower() and parser.parse(bus["time"]).time() <= arrival_deadline
         ]
-        if goingBus:
-            goingBus = [max(goingBus, key=lambda b: parser.parse(b["time"]).time())]
-        else:
-            goingBus = []
+        if going_buses:
+            going_bus = [max(going_buses, key=lambda b: parser.parse(b["time"]).time())]
 
-        # Find the earliest bus returning from the location after the last lecture
-        returingBus = [
+        # Earliest bus returning after the last lecture
+        returning_buses = [
             bus for bus in buses
-            if bus["to"] == location and parser.parse(bus["time"]).time() > last_l
+            if bus["to"].lower() == location.lower() and parser.parse(bus["time"]).time() >= departure_earliest
         ]
-        if returingBus:
-            returingBus = [min(returingBus, key=lambda b: parser.parse(b["time"]).time())]
-        else:
-            returingBus = []
+        if returning_buses:
+            returning_bus = [min(returning_buses, key=lambda b: parser.parse(b["time"]).time())]
 
-    output = f''
-    if dayLectures:
-        if goingBus and returingBus:  # Check if both lists have elements
-            output += f"You have {len(dayLectures)} physical classes today.\nYour going bus is in {goingBus[0]['time']}.\nYour returning bus is in {returingBus[0]['time']}.\n\n"
-        for l in dayLectures:
-            output += f"{l['name']} from {l['start']} to {l['end']} in {l['room']}\n"
+    output = ""
+    if physical_l:
+        if going_bus and returning_bus:
+            output += f"🗓 You have {len(physical_l)} physical classes today.\n"
+            output += f"🚌 Going bus: {going_bus[0]['time']}\n"
+            output += f"🚌 Returning bus: {returning_bus[0]['time']}\n\n"
+        else:
+            output += f"🗓 You have {len(physical_l)} physical classes today.\n"
+            if not going_bus:
+                output += "⚠️ No suitable going bus found.\n"
+            if not returning_bus:
+                output += "⚠️ No suitable returning bus found.\n"
+            output += "\n"
+            
+        for l in physical_l:
+            output += f"🔹 {l['name']}\n   ⌚️ {l['start']} - {l['end']}\n   📍 {l['room']}\n"
     else:
-        output += "You don't have a physical class today\n"
+        output += "✨ No physical classes today.\n"
+
     if online_l:
-        output += f'\nYou have {len(online_l)} online classes\n'
+        output += f"\n💻 You have {len(online_l)} online classes:\n"
         for l in online_l:
-            output += f"{l['name']} from {l['start']} to {l['end']}\n"
+            output += f"🔹 {l['name']}\n   ⌚️ {l['start']} - {l['end']}\n"
     else:
-        output += "You don't have a online class today\n"
+        output += "✨ No online classes today.\n"
+
     return output
-# print(finder('APD1F2503SE','G1','City of Green'))
+
+if __name__ == "__main__":
+    # Test call
+    print(finder('APD2F2602SE','G1','City Of Green'))
+    pass
