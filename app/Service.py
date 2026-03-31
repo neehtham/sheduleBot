@@ -10,9 +10,24 @@ DATA_DIR = BASE_DIR / "data"
 SCHEDULE_DIR = DATA_DIR / "schedules"
 
 
+def get_degree_dir(intake: str):
+    degree = intake[:4]
+    degree_dir = SCHEDULE_DIR / f"{degree}"
+    if not degree_dir.exists():
+        degree_dir.mkdir()
+    return degree_dir
+
+
+def get_intake_dir(intake: str):
+    intake_dir = get_degree_dir(intake) / f"{intake[:7]}"
+    if not intake_dir.exists():
+        intake_dir.mkdir()
+    return intake_dir
+
+
 def create_intake_schedule(intake: str, intake_schedules: list):
-    # intake_folder = SCHEDULE_DIR / Path(f"{intake}")
-    intake_schedule = SCHEDULE_DIR / f"{intake}.json"
+    intake_dir = get_intake_dir(intake)
+    intake_schedule = intake_dir / f"{intake}.json"
     with open(intake_schedule, "w", encoding="utf-8") as f:
         json.dump(intake_schedules, f, indent=4)
 

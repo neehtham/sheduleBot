@@ -3,16 +3,16 @@ from datetime import datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+from Service import get_intake_dir
 
 # Set base directory for data files (project root / data)
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
-SCHEDULE_DIR = DATA_DIR / "schedules"
 
 
 def finder(intakeCode, groupCode, acc):
     # lecture_file = DATA_DIR / "lectureShedule.json"
-    lecture_file = SCHEDULE_DIR / f"{intakeCode}.json"
+    lecture_file = get_intake_dir(intakeCode) / f"{intakeCode}.json"
     bus_file = DATA_DIR / "busShedule.json"
 
     try:
