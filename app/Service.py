@@ -18,6 +18,8 @@ def create_intake_schedule(intake: str, intake_schedules: list):
 
 
 def getting_sync():
+    if not SCHEDULE_DIR.exists():
+        SCHEDULE_DIR.mkdir()
     url = "https://s3-ap-southeast-1.amazonaws.com/open-ws/weektimetable"
     headers = {
         "sec-ch-ua-platform": '"Windows"',
@@ -53,11 +55,12 @@ def getting_sync():
         for intake, schedule in cleaned.items():
             create_intake_schedule(intake, schedule)
 
-        output_file = DATA_DIR / "lectureShedule.json"
-        with open(output_file, "w", encoding="utf-8") as file:
-            json.dump(cleaned, file, indent=4)
-
-        print(f"JSON data saved successfully to {output_file}!")
+        # output_file = DATA_DIR / "lectureShedule.json"
+        # with open(output_file, "w", encoding="utf-8") as file:
+        #     json.dump(cleaned, file, indent=4)
+        #
+        # print(f"JSON data saved successfully to {output_file}!")
+        print("JSON data saved successfully!")
         return True
     except Exception as e:
         print(f"Failed to fetch or save data: {e}")
