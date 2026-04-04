@@ -3,6 +3,7 @@ from datetime import datetime
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+import timeit
 
 # Set base directory for data files (project root / data)
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -106,7 +107,17 @@ def finder(intakeCode, groupCode, acc):
 
     return output
 
-if __name__ == "__main__":
-    # Test call
-    # print(finder('APD2F2602SE','G1','City Of Green'))
-    pass
+# if __name__ == "__main__":
+#     # Test call
+#     # print(finder('APD2F2602SE','G1','City Of Green'))
+#     pass
+
+if __name__ == "__main__":    
+    # Measure execution time for 10 runs
+    execution_time = timeit.timeit(
+        "finder('APD2F2602SE', 'G1', 'City Of Green')", 
+        globals=globals(), 
+        number=10
+    )
+    
+    print(f"\n⏱️ The finder function took an average of {execution_time / 10:.4f} seconds per execution.")
