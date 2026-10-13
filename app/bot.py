@@ -11,7 +11,8 @@ from telegram.ext import (
 import os
 import json
 import asyncio
-from datetime import time
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
 import pytz
 from pathlib import Path
 from dotenv import load_dotenv
@@ -56,6 +57,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
         "Welcome to the Schedule Bot! 🚌📚\n\n"
         "Use /register to start receiving your daily schedule and bus timings.\n"
+        "Use /tmrw to check tomorrow's schedule.\n"
         "Use /delete if you wish to unregister."
     )
 
@@ -142,6 +144,21 @@ async def delete_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     else:
         await update.message.reply_text("You are not registered.")
 
+async def tomorrow_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    users = await read_users()
+    details = users.get(str(update.effective_user.id))
+    if not details:
+        await update.message.reply_text("You are not registered. Use /register first.")
+        return
+
+    if not await getting():
+        await update.message.reply_text("Could not fetch the schedule right now. Please try again later.")
+        return
+
+    tomorrow = datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).date() + timedelta(days=1)
+    schedule_text = finder(details['code'], details['group'], details['accommodation'], tomorrow)
+    await update.message.reply_text(schedule_text)
+
 async def send_schedules_now(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("🔄 Fetching and sending schedules...")
     # Refresh data first
@@ -207,6 +224,7 @@ def main() -> None:
     app.add_handler(CommandHandler("start", start))
     app.add_handler(conv_handler)
     app.add_handler(CommandHandler("send", send_schedules_now))
+    app.add_handler(CommandHandler("tmrw", tomorrow_schedule))
     app.add_handler(CommandHandler("delete", delete_user))
     
     # Schedule the daily job at 7:00 AM (MYT)

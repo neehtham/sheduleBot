@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
@@ -11,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
 
 
-def finder(intakeCode, groupCode, acc):
+def finder(intakeCode, groupCode, acc, target_date=None):
     # lecture_file = DATA_DIR / "lectureShedule.json"
     lecture_file = get_intake_dir(intakeCode) / f"{intakeCode}.json"
     bus_file = DATA_DIR / "busShedule.json"
@@ -30,15 +31,20 @@ def finder(intakeCode, groupCode, acc):
         return f"Error reading schedules: {e}"
 
     day_lectures = []
-    today = datetime.now().date()
-    # today = parser.parse("2026-03-26", dayfirst=True).date()
+    today = datetime.now(ZoneInfo("Asia/Kuala_Lumpur")).date()
+    selected_date = target_date if target_date is not None else today
+    day_label = (
+        "today" if selected_date == today else
+        "tomorrow" if selected_date == today + timedelta(days=1) else
+        f"on {selected_date:%d %b %Y}"
+    )
 
     for lecture in lectures:
         try:
             class_date = parser.parse(lecture["date"], dayfirst=True).date()
             if (
                 # intakeCode == lecture["intake"]
-                groupCode == lecture["group"] and today == class_date
+                groupCode == lecture["group"] and selected_date == class_date
             ):
                 day_lectures.append(lecture)
         except Exception:
@@ -94,11 +100,11 @@ def finder(intakeCode, groupCode, acc):
     output = ""
     if physical_l:
         if going_bus and returning_bus:
-            output += f"🗓 You have {len(physical_l)} physical classes today.\n"
+            output += f"🗓 You have {len(physical_l)} physical classes {day_label}.\n"
             output += f"🚌 Going bus: {going_bus[0]['time']}\n"
             output += f"🚌 Returning bus: {returning_bus[0]['time']}\n\n"
         else:
-            output += f"🗓 You have {len(physical_l)} physical classes today.\n"
+            output += f"🗓 You have {len(physical_l)} physical classes {day_label}.\n"
             if not going_bus:
                 output += "⚠️ No suitable going bus found.\n"
             if not returning_bus:
@@ -110,14 +116,14 @@ def finder(intakeCode, groupCode, acc):
                 f"🔹 {l['name']}\n   ⌚️ {l['start']} - {l['end']}\n   📍 {l['room']}\n"
             )
     else:
-        output += "✨ No physical classes today.\n"
+        output += f"✨ No physical classes {day_label}.\n"
 
     if online_l:
         output += f"\n💻 You have {len(online_l)} online classes:\n"
         for l in online_l:
             output += f"🔹 {l['name']}\n   ⌚️ {l['start']} - {l['end']}\n"
     else:
-        output += "✨ No online classes today.\n"
+        output += f"✨ No online classes {day_label}.\n"
 
     return output
 
